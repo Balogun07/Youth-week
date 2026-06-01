@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Youth Week Evening Gathering</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --deep: #1A0F2E;
+  --mid: #2D1B5E;
+  --cream: #FAF6EE;
+  --text: #2A1A4A;
+  --rule: #C9A84C44;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#1A0F2E; font-family:'Lato',sans-serif; color:var(--text); min-height:100vh; overflow-x:hidden; }
+
+.bg {
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(45,27,94,0.6) 0%, transparent 50%),
+    #1A0F2E;
+}
+
+/* SCREENS */
+.screen { display:none; position:relative; z-index:1; min-height:100vh; padding:24px 16px 60px; }
+.screen.active { display:block; }
+.center-screen { display:flex; align-items:center; justify-content:center; }
+.center-screen.active { display:flex; flex-direction:column; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.anim { animation: fadeUp 0.6s ease both; }
+
+/* SHARED CARD */
+.card {
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(201,168,76,0.22);
+  border-radius:12px;
+  padding:48px 40px;
+  max-width:420px;
+  width:100%;
+  backdrop-filter:blur(8px);
+}
+
+/* ORNAMENT */
+.orn { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:22px; }
+.orn-line { flex:1; max-width:80px; height:1px; background:linear-gradient(to right,transparent,var(--gold)); }
+.orn-line.r { background:linear-gradient(to left,transparent,var(--gold)); }
+.orn-dot { width:6px; height:6px; background:var(--gold); transform:rotate(45deg); }
+
+/* TYPOGRAPHY */
+.label-tag { font-family:'Cinzel',serif; font-size:9px; letter-spacing:4px; color:var(--gold); text-transform:uppercase; margin-bottom:12px; }
+.big-title { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; color:#fff; line-height:1.2; margin-bottom:8px; }
+.big-title em { color:var(--gold-light); font-style:italic; }
+.sub-tag { font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:rgba(255,255,255,0.3); text-transform:uppercase; margin-bottom:32px; }
+
+/* INPUT */
+.field-label { font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:8px; display:block; }
+.text-input {
+  width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(201,168,76,0.3);
+  border-radius:6px; padding:13px 16px; font-family:'Cormorant Garamond',serif; font-size:17px;
+  color:#fff; outline:none; transition:border-color 0.2s, background 0.2s; margin-bottom:14px;
+}
+.text-input::placeholder { color:rgba(255,255,255,0.2); font-size:14px; font-family:'Lato',sans-serif; }
+.text-input:focus { border-color:var(--gold); background:rgba(201,168,76,0.05); }
+.code-input { text-align:center; font-family:'Cinzel',serif; letter-spacing:4px; font-size:15px; text-transform:uppercase; }
+
+.error-msg { color:#E07070; font-family:'Cinzel',serif; font-size:10px; letter-spacing:1px; min-height:18px; margin-bottom:10px; }
+
+/* BUTTONS */
+.btn-gold {
+  width:100%; background:linear-gradient(135deg,#C9A84C,#E8C97A,#C9A84C);
+  background-size:200% 100%; border:none; border-radius:6px; padding:14px;
+  font-family:'Cinzel',serif; font-size:11px; letter-spacing:3px; color:var(--deep);
+  text-transform:uppercase; cursor:pointer; font-weight:700;
+  transition:background-position 0.4s, transform 0.15s;
+}
+.btn-gold:hover { background-position:100% 0; transform:translateY(-1px); }
+
+.btn-outline {
+  width:100%; background:transparent; border:1px solid rgba(201,168,76,0.35);
+  border-radius:6px; padding:13px; font-family:'Cinzel',serif; font-size:11px;
+  letter-spacing:3px; color:var(--gold); text-transform:uppercase; cursor:pointer;
+  transition:all 0.2s; margin-top:8px;
+}
+.btn-outline:hover { background:rgba(201,168,76,0.08); }
+
+.btn-dark {
+  background:linear-gradient(135deg,var(--deep),var(--mid));
+  border:1px solid var(--gold); border-radius:6px; padding:13px 40px;
+  font-family:'Cinzel',serif; font-size:10px; letter-spacing:3px;
+  color:var(--gold-light); text-transform:uppercase; cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-dark:hover { background:var(--gold); color:var(--deep); }
+
+.admin-link { margin-top:18px; font-size:10px; color:rgba(255,255,255,0.18); letter-spacing:2px; font-family:'Cinzel',serif; cursor:pointer; transition:color 0.2s; text-align:center; }
+.admin-link:hover { color:var(--gold); }
+
+/* INVITE PAGE */
+.invite-page { max-width:680px; margin:0 auto; }
+
+.invite-header {
+  background:var(--deep); border-radius:12px 12px 0 0;
+  border:1px solid rgba(201,168,76,0.2); border-bottom:none;
+  padding:40px 40px 28px; text-align:center; position:relative; overflow:hidden;
+}
+.invite-header::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 30% 0%,rgba(201,168,76,0.14) 0%,transparent 55%);
+  pointer-events:none;
+}
+
+.invite-badge {
+  display:inline-block; border:1px solid rgba(201,168,76,0.35);
+  border-radius:20px; padding:4px 16px; font-family:'Cinzel',serif;
+  font-size:8px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:16px;
+}
+
+.invite-title { font-family:'Cormorant Garamond',serif; font-size:38px; font-weight:300; color:#fff; line-height:1.15; }
+.invite-title em { color:var(--gold-light); font-style:italic; }
+.invite-sub { font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px; color:rgba(255,255,255,0.3); text-transform:uppercase; margin-top:10px; }
+
+.invite-body {
+  background:var(--cream); border:1px solid rgba(201,168,76,0.15);
+  border-top:none; border-radius:0 0 12px 12px; padding:32px 40px 40px;
+}
+
+/* Programme */
+.sec-head {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:4px; color:var(--gold);
+  text-transform:uppercase; display:flex; align-items:center; gap:12px; margin-bottom:18px;
+}
+.sec-head::before,.sec-head::after { content:''; flex:1; height:1px; background:var(--rule); }
+
+.prog-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; margin-bottom:28px; }
+@media(max-width:480px){ .prog-grid { grid-template-columns:1fr; } }
+
+.prog-item {
+  display:flex; align-items:center; gap:10px; padding:9px 0;
+  border-bottom:1px solid var(--rule);
+}
+.prog-item:nth-child(odd) { padding-right:18px; border-right:1px solid var(--rule); }
+.prog-item:nth-child(even) { padding-left:18px; }
+.prog-item:nth-last-child(-n+2) { border-bottom:none; }
+@media(max-width:480px){
+  .prog-item:nth-child(odd){ border-right:none; padding-right:0; }
+  .prog-item:nth-child(even){ padding-left:0; }
+  .prog-item:nth-last-child(2){ border-bottom:1px solid var(--rule); }
+  .prog-item:last-child{ border-bottom:none; }
+}
+.prog-n { font-family:'Cormorant Garamond',serif; font-size:18px; font-style:italic; color:var(--gold); min-width:20px; }
+.prog-t { font-family:'Cinzel',serif; font-size:9.5px; font-weight:600; color:var(--deep); letter-spacing:0.3px; }
+
+.divider { display:flex; align-items:center; gap:10px; margin:22px 0; }
+.div-line { flex:1; height:1px; background:var(--rule); }
+.div-gem { width:5px; height:5px; border:1px solid var(--gold); transform:rotate(45deg); }
+
+/* RSVP BUTTONS */
+.rsvp-choice { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 20px; }
+.rsvp-btn {
+  border:1px solid rgba(201,168,76,0.3); border-radius:8px; padding:16px 10px;
+  text-align:center; cursor:pointer; transition:all 0.2s; background:#fff;
+  font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; color:#8A7AAA; text-transform:uppercase;
+}
+.rsvp-btn .rsvp-icon { font-size:26px; display:block; margin-bottom:6px; }
+.rsvp-btn:hover { border-color:var(--gold); }
+.rsvp-btn.selected-yes { background:var(--deep); border-color:var(--gold); color:var(--gold-light); }
+.rsvp-btn.selected-no { background:#f0f0f0; border-color:#ccc; color:#999; }
+
+/* MENU FORM */
+.course-block { margin-bottom:20px; }
+.course-lbl {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:var(--gold);
+  text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.course-num { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--gold); }
+.c-rule { flex:1; height:1px; background:var(--rule); }
+
+.opt-wrap { display:flex; flex-wrap:wrap; gap:7px; }
+.opt-label { cursor:pointer; user-select:none; }
+.opt-label input { display:none; }
+.opt-pill {
+  display:block; border:1px solid rgba(201,168,76,0.3); border-radius:30px;
+  padding:6px 14px; font-size:12px; color:#6A5A8A; background:#fff; transition:all 0.18s;
+}
+.opt-label input:checked + .opt-pill { background:var(--deep); border-color:var(--gold); color:var(--gold-light); font-weight:700; }
+.opt-label:hover .opt-pill { border-color:var(--gold); }
+
+/* STATUS PILL */
+.status-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  border-radius:20px; padding:5px 14px;
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase;
+}
+.status-confirmed { background:rgba(80,180,100,0.12); border:1px solid rgba(80,180,100,0.3); color:#6ED490; }
+.status-declined  { background:rgba(200,80,80,0.1);  border:1px solid rgba(200,80,80,0.25);  color:#E08080; }
+.status-pending   { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25); color:var(--gold); }
+
+/* THANK YOU */
+.ty-icon { font-size:52px; margin-bottom:18px; text-align:center; }
+.ty-title { font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:300; color:#fff; text-align:center; margin-bottom:10px; }
+.ty-title em { color:var(--gold-light); font-style:italic; }
+.ty-msg { font-size:13px; color:rgba(255,255,255,0.4); line-height:1.7; text-align:center; margin-bottom:24px; }
+.ty-box { background:rgba(201,168,76,0.07); border:1px solid rgba(201,168,76,0.18); border-radius:8px; padding:16px 18px; margin-bottom:18px; }
+.ty-box-title { font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:10px; }
+.ty-row { font-size:12px; color:rgba(255,255,255,0.55); padding:4px 0; border-bottom:1px solid rgba(201,168,76,0.08); font-family:'Lato',sans-serif; }
+.ty-row:last-child { border-bottom:none; }
+.ty-row span { color:var(--gold-light); font-weight:700; }
+.ty-note { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,0.18); text-align:center; }
+
+/* ADMIN */
+.admin-wrap { max-width:900px; margin:0 auto; }
+.admin-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:10px; }
+.admin-title { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:#fff; }
+.admin-title em { color:var(--gold-light); font-style:italic; }
+
+.tab-row { display:flex; gap:6px; margin-bottom:24px; flex-wrap:wrap; }
+.tab-btn {
+  border:1px solid rgba(201,168,76,0.25); border-radius:6px; padding:8px 18px;
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.4);
+  text-transform:uppercase; cursor:pointer; background:transparent; transition:all 0.2s;
+}
+.tab-btn.active { background:rgba(201,168,76,0.12); border-color:var(--gold); color:var(--gold); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+.stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:24px; }
+.stat-card { background:rgba(255,255,255,0.04); border:1px solid rgba(201,168,76,0.18); border-radius:8px; padding:16px; text-align:center; }
+.stat-num { font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:300; color:var(--gold-light); line-height:1; margin-bottom:4px; }
+.stat-lbl { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,0.28); text-transform:uppercase; }
+
+.tbl-wrap { background:rgba(255,255,255,0.03); border:1px solid rgba(201,168,76,0.12); border-radius:10px; overflow:hidden; margin-bottom:20px; overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:480px; }
+th { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2.5px; color:var(--gold); text-transform:uppercase; padding:13px 14px; text-align:left; background:rgba(201,168,76,0.05); border-bottom:1px solid rgba(201,168,76,0.12); }
+td { padding:11px 14px; font-size:12px; color:rgba(255,255,255,0.6); border-bottom:1px solid rgba(255,255,255,0.04); font-family:'Lato',sans-serif; vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(201,168,76,0.03); }
+
+.empty { text-align:center; padding:40px; color:rgba(255,255,255,0.2); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; }
+
+.code-tag { display:inline-block; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.22); border-radius:4px; padding:2px 8px; font-family:'Cinzel',serif; font-size:10px; letter-spacing:1.5px; color:var(--gold); }
+.food-chip { display:inline-block; background:rgba(45,27,94,0.5); border-radius:20px; padding:2px 8px; font-size:10px; color:rgba(255,255,255,0.5); margin:2px 2px 2px 0; }
+
+.sec-sub { font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; display:flex; align-items:center; gap:12px; margin:20px 0 14px; }
+.sec-sub::after { content:''; flex:1; height:1px; background:var(--rule); }
+
+.codes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
+.code-item { background:rgba(255,255,255,0.03); border:1px solid rgba(201,168,76,0.15); border-radius:6px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; }
+.code-val { font-family:'Cinzel',serif; font-size:11px; letter-spacing:1.5px; color:var(--gold-light); }
+.c-used { background:rgba(80,180,100,0.12); color:#6ED490; font-size:9px; padding:2px 7px; border-radius:10px; font-weight:700; }
+.c-open { background:rgba(201,168,76,0.08); color:rgba(201,168,76,0.5); font-size:9px; padding:2px 7px; border-radius:10px; }
+
+.btn-sm { background:transparent; border:1px solid rgba(201,168,76,0.3); border-radius:4px; padding:7px 13px; font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:var(--gold); cursor:pointer; text-transform:uppercase; transition:all 0.2s; }
+.btn-sm:hover { background:rgba(201,168,76,0.1); }
+
+.back-btn { background:transparent; border:none; color:rgba(255,255,255,0.25); font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; cursor:pointer; text-transform:uppercase; transition:color 0.2s; padding:0; margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+.back-btn:hover { color:var(--gold); }
+
+.food-summary-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:8px; }
+.food-sum-card { background:rgba(255,255,255,0.03); border:1px solid rgba(201,168,76,0.12); border-radius:8px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; }
+.food-sum-name { font-size:12px; color:rgba(255,255,255,0.6); font-family:'Lato',sans-serif; }
+.food-sum-count { font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--gold-light); font-weight:300; }
+
+.msg-card {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(201,168,76,0.15);
+  border-radius:8px;
+  padding:16px 18px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:border-color 0.2s, background 0.2s;
+  position:relative;
+}
+.msg-card:hover { border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.04); }
+.msg-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.msg-code-badge { font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; color:var(--gold); }
+.msg-copy-hint { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,0.2); text-transform:uppercase; }
+.msg-body { font-size:12px; color:rgba(255,255,255,0.5); font-family:'Lato',sans-serif; line-height:1.7; white-space:pre-wrap; word-break:break-all; }
+.msg-copied { position:absolute; top:12px; right:14px; background:rgba(80,180,100,0.2); border:1px solid rgba(80,180,100,0.3); border-radius:4px; padding:3px 10px; font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:#6ED490; display:none; }
+
+@media(max-width:600px){
+  .card,.invite-body,.invite-header{ padding-left:20px; padding-right:20px; }
+  .invite-title { font-size:28px; }
+  td:nth-child(4),th:nth-child(4){ display:none; }
+}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<!-- ══════════════════════════════
+  SCREEN: ACCESS CODE
+══════════════════════════════ -->
+<div id="s-access" class="screen center-screen active">
+  <div class="card anim">
+    <div class="orn"><div class="orn-line"></div><div class="orn-dot"></div><div class="orn-line r"></div></div>
+    <div class="label-tag" style="text-align:center">You're Invited</div>
+    <h1 class="big-title" style="text-align:center">Youth Week<br><em>Evening Gathering</em></h1>
+    <div class="sub-tag" style="text-align:center">Enter your access code to continue</div>
+    <label class="field-label">Access Code</label>
+    <input class="text-input code-input" id="code-input" type="text" placeholder="e.g. YW-A1B2" maxlength="8" autocomplete="off" />
+    <div class="error-msg" id="code-error"></div>
+    <button class="btn-gold" onclick="checkCode()">Open My Invite</button>
+    <div class="admin-link" onclick="adminLogin()">Admin Access</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  SCREEN: INVITE + RSVP
+══════════════════════════════ -->
+<div id="s-invite" class="screen">
+  <div class="invite-page anim" style="margin:0 auto;">
+
+    <div class="invite-header">
+      <div class="orn"><div class="orn-line"></div><div class="orn-dot"></div><div class="orn-line r"></div></div>
+      <div class="invite-badge">Personal Invitation</div>
+      <h1 class="invite-title">Youth Week<br><em>Evening Gathering</em></h1>
+      <div class="invite-sub">A Night of Fellowship, Fun &amp; Faith</div>
+    </div>
+
+    <div class="invite-body">
+      <div class="sec-head">Programme</div>
+      <div class="prog-grid">
+        <div class="prog-item"><span class="prog-n">1</span><span class="prog-t">Welcome &amp; Opening Prayer</span></div>
+        <div class="prog-item"><span class="prog-n">2</span><span class="prog-t">Icebreaker Session</span></div>
+        <div class="prog-item"><span class="prog-n">3</span><span class="prog-t">Fruit Appetizers Serving</span></div>
+        <div class="prog-item"><span class="prog-n">4</span><span class="prog-t">Games &amp; Group Activities</span></div>
+        <div class="prog-item"><span class="prog-n">5</span><span class="prog-t">Main Meal Serving</span></div>
+        <div class="prog-item"><span class="prog-n">6</span><span class="prog-t">Karaoke &amp; Music Session</span></div>
+        <div class="prog-item"><span class="prog-n">7</span><span class="prog-t">Special Moment / Short Message</span></div>
+        <div class="prog-item"><span class="prog-n">8</span><span class="prog-t">Dessert &amp; Refreshment</span></div>
+        <div class="prog-item"><span class="prog-n">9</span><span class="prog-t">Closing Prayer &amp; Free Interaction</span></div>
+      </div>
+
+      <div class="divider"><div class="div-line"></div><div class="div-gem"></div><div class="div-line"></div></div>
+
+      <!-- RSVP SECTION — shown if not yet RSVPed -->
+      <div id="rsvp-section">
+        <div class="sec-head">RSVP</div>
+        <label class="field-label">Your Name</label>
+        <input class="text-input" id="rsvp-name" placeholder="Enter your full name" style="color:var(--text);background:#fff;border-color:rgba(201,168,76,0.3);" />
+        <label class="field-label" style="margin-top:4px;">Will you be attending?</label>
+        <div class="rsvp-choice">
+          <div class="rsvp-btn" id="btn-yes" onclick="selectRsvp('yes')">
+            <span class="rsvp-icon">🎉</span>Yes, I'll be there!
+          </div>
+          <div class="rsvp-btn" id="btn-no" onclick="selectRsvp('no')">
+            <span class="rsvp-icon">😔</span>Sorry, I can't make it
+          </div>
+        </div>
+        <div class="error-msg" id="rsvp-error"></div>
+        <button class="btn-gold" onclick="submitRsvp()">Send My RSVP</button>
+      </div>
+
+      <!-- ALREADY RSVPed — shown if they return -->
+      <div id="rsvp-done" style="display:none;">
+        <div class="sec-head">Your RSVP</div>
+        <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.18);border-radius:8px;padding:18px 20px;margin-bottom:20px;">
+          <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--gold);margin-bottom:10px;">RSVP Status</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--text);" id="rsvp-done-name"></span>
+            <span id="rsvp-done-status"></span>
+          </div>
+        </div>
+        <div id="menu-cta" style="display:none;">
+          <p style="font-family:'Lato',sans-serif;font-size:13px;color:#8A7AAA;margin-bottom:16px;line-height:1.6;">
+            Great! One more step — please select your food choices for the evening.
+          </p>
+          <button class="btn-gold" onclick="goToMenu()">Choose My Food →</button>
+        </div>
+        <div id="menu-done-note" style="display:none;">
+          <p style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(0,0,0,0.3);text-align:center;">✓ Food selections submitted. See you there!</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  SCREEN: FOOD MENU
+══════════════════════════════ -->
+<div id="s-menu" class="screen">
+  <div class="invite-page anim" style="margin:0 auto;">
+    <div class="invite-header">
+      <div class="orn"><div class="orn-line"></div><div class="orn-dot"></div><div class="orn-line r"></div></div>
+      <div class="invite-badge">Menu Selection</div>
+      <h1 class="invite-title">Choose Your<br><em>Meal</em></h1>
+      <div class="invite-sub">Select all that apply for each course</div>
+    </div>
+    <div class="invite-body">
+      <div class="sec-head">Menu</div>
+
+      <div class="course-block">
+        <div class="course-lbl"><span class="course-num">i.</span> Starter <div class="c-rule"></div></div>
+        <div class="opt-wrap">
+          <label class="opt-label"><input type="checkbox" name="starter" value="Watermelon"><span class="opt-pill">🍉 Watermelon</span></label>
+          <label class="opt-label"><input type="checkbox" name="starter" value="Pineapple"><span class="opt-pill">🍍 Pineapple</span></label>
+          <label class="opt-label"><input type="checkbox" name="starter" value="Mixed Fruits"><span class="opt-pill">🍓 Mixed Fruits</span></label>
+        </div>
+      </div>
+
+      <div class="course-block">
+        <div class="course-lbl"><span class="course-num">ii.</span> Main Course <div class="c-rule"></div></div>
+        <div class="opt-wrap">
+          <label class="opt-label"><input type="checkbox" name="main" value="Jollof Rice"><span class="opt-pill">🍛 Jollof Rice</span></label>
+          <label class="opt-label"><input type="checkbox" name="main" value="Fried Rice"><span class="opt-pill">🍚 Fried Rice</span></label>
+          <label class="opt-label"><input type="checkbox" name="main" value="Swallow"><span class="opt-pill">🫕 Swallow</span></label>
+        </div>
+      </div>
+
+      <div class="course-block">
+        <div class="course-lbl"><span class="course-num">iii.</span> Sides <div class="c-rule"></div></div>
+        <div class="opt-wrap">
+          <label class="opt-label"><input type="checkbox" name="sides" value="Fried Plantain"><span class="opt-pill">🍌 Fried Plantain</span></label>
+          <label class="opt-label"><input type="checkbox" name="sides" value="Coleslaw"><span class="opt-pill">🥗 Coleslaw</span></label>
+        </div>
+      </div>
+
+      <div class="course-block">
+        <div class="course-lbl"><span class="course-num">iv.</span> Drinks <div class="c-rule"></div></div>
+        <div class="opt-wrap">
+          <label class="opt-label"><input type="checkbox" name="drinks" value="Zobo"><span class="opt-pill">🥤 Zobo</span></label>
+          <label class="opt-label"><input type="checkbox" name="drinks" value="Bottled Water"><span class="opt-pill">💧 Bottled Water</span></label>
+          <label class="opt-label"><input type="checkbox" name="drinks" value="Soft Drinks"><span class="opt-pill">🧃 Soft Drinks</span></label>
+        </div>
+      </div>
+
+      <div class="course-block">
+        <div class="course-lbl"><span class="course-num">v.</span> Dessert <div class="c-rule"></div></div>
+        <div class="opt-wrap">
+          <label class="opt-label"><input type="checkbox" name="dessert" value="Popcorn"><span class="opt-pill">🍿 Popcorn</span></label>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;text-align:center;">
+        <div class="error-msg" id="menu-error" style="text-align:center;"></div>
+        <button class="btn-dark" onclick="submitMenu()">Confirm My Food Choices</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  SCREEN: THANK YOU
+══════════════════════════════ -->
+<div id="s-thanks" class="screen center-screen">
+  <div class="card anim">
+    <div class="ty-icon" id="ty-icon">✨</div>
+    <h2 class="ty-title" id="ty-title">All Done!<br><em>See You There</em></h2>
+    <p class="ty-msg" id="ty-msg">Your selections have been received.</p>
+    <div class="ty-box" id="ty-box"></div>
+    <p class="ty-note">A Night of Fellowship, Fun &amp; Faith</p>
+    <button class="btn-outline" style="margin-top:16px;" onclick="goBackToInvite()">← View My Invite</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  SCREEN: ADMIN
+══════════════════════════════ -->
+<div id="s-admin" class="screen">
+  <div class="admin-wrap anim">
+    <button class="back-btn" onclick="show('s-access')">← Exit Admin</button>
+    <div class="admin-bar">
+      <h2 class="admin-title">Admin <em>Dashboard</em></h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-sm" onclick="buildAdmin()">↻ Refresh</button>
+        <button class="btn-sm" onclick="exportCSV()">↓ Export CSV</button>
+      </div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('tab-rsvp',this)">RSVPs</button>
+      <button class="tab-btn" onclick="switchTab('tab-food',this)">Food Selections</button>
+      <button class="tab-btn" onclick="switchTab('tab-summary',this)">Food Summary</button>
+      <button class="tab-btn" onclick="switchTab('tab-codes',this)">Guest Codes</button>
+      <button class="tab-btn" onclick="switchTab('tab-messages',this);buildMessages()">Message Templates</button>
+    </div>
+
+    <!-- TAB: RSVPs -->
+    <div id="tab-rsvp" class="tab-content active">
+      <div class="stats-row" id="rsvp-stats"></div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Name</th><th>Code</th><th>Attending</th><th>Time</th></tr></thead>
+        <tbody id="rsvp-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- TAB: Food -->
+    <div id="tab-food" class="tab-content">
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Name</th><th>Code</th><th>Starter</th><th>Main</th><th>Sides</th><th>Drinks</th><th>Dessert</th></tr></thead>
+        <tbody id="food-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- TAB: Food Summary -->
+    <div id="tab-summary" class="tab-content">
+      <div class="sec-sub">Total counts per item</div>
+      <div class="food-summary-grid" id="food-summary-grid"></div>
+    </div>
+
+    <!-- TAB: Codes -->
+    <div id="tab-codes" class="tab-content">
+      <div class="stats-row" id="code-stats"></div>
+      <div class="sec-sub">All 50 Guest Codes</div>
+      <p style="font-size:11px;color:rgba(255,255,255,0.3);font-family:'Lato',sans-serif;margin-bottom:14px;line-height:1.6;">
+        Send one code per guest via WhatsApp or message. Each code is unique and tied to that guest's RSVP and food choices.
+      </p>
+      <div class="codes-grid" id="codes-grid"></div>
+    </div>
+
+    <!-- TAB: Message Templates -->
+    <div id="tab-messages" class="tab-content">
+      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.18);border-radius:10px;padding:20px 22px;margin-bottom:22px;">
+        <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--gold);margin-bottom:10px;text-transform:uppercase;">Your Site Link</div>
+        <p style="font-size:11px;color:rgba(255,255,255,0.35);font-family:'Lato',sans-serif;margin-bottom:12px;line-height:1.7;">
+          Once you host this file online (e.g. on Netlify), paste your site URL below. Each guest message will include their personal link automatically.
+        </p>
+        <input id="site-url-input" class="text-input" placeholder="https://yoursite.netlify.app" style="color:#fff;background:rgba(255,255,255,0.06);margin-bottom:10px;font-family:'Lato',sans-serif;font-size:13px;" oninput="buildMessages()" />
+        <div style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(255,255,255,0.2);margin-top:4px;">
+          Admin link: <span id="admin-link-preview" style="color:rgba(201,168,76,0.5);">paste your URL above</span>
+        </div>
+      </div>
+
+      <div class="sec-sub">Guest Message Templates</div>
+      <p style="font-size:11px;color:rgba(255,255,255,0.3);font-family:'Lato',sans-serif;margin-bottom:16px;line-height:1.6;">
+        Click any message to copy it. Send each one personally via WhatsApp or SMS.
+      </p>
+      <div id="messages-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════
+// GUEST CODES
+// ═══════════════════════════
+const CODES = [
+  'YW-A1B2','YW-C3D4','YW-E5F6','YW-G7H8','YW-I9J0',
+  'YW-K1L2','YW-M3N4','YW-O5P6','YW-Q7R8','YW-S9T0',
+  'YW-U1V2','YW-W3X4','YW-Y5Z6','YW-A2B3','YW-C4D5',
+  'YW-E6F7','YW-G8H9','YW-I0J1','YW-K2L3','YW-M4N5',
+  'YW-O6P7','YW-Q8R9','YW-S0T1','YW-U2V3','YW-W4X5',
+  'YW-Y6Z7','YW-A3B4','YW-C5D6','YW-E7F8','YW-G9H0',
+  'YW-I1J2','YW-K3L4','YW-M5N6','YW-O7P8','YW-Q9R0',
+  'YW-S1T2','YW-U3V4','YW-W5X6','YW-Y7Z8','YW-A4B5',
+  'YW-C6D7','YW-E8F9','YW-G0H1','YW-I2J3','YW-K4L5',
+  'YW-M6N7','YW-O8P9','YW-Q0R1','YW-S2T3','YW-U4V5'
+];
+const ADMIN_CODE = 'ADMIN-2025';
+
+// ═══════════════════════════
+// STORAGE
+// ═══════════════════════════
+const getD = k => { try { return JSON.parse(localStorage.getItem(k)||'{}'); } catch { return {}; } };
+const setD = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+// rsvps: { [code]: { name, attending, time } }
+// food:  { [code]: { name, selections, time } }
+const getRsvps = () => getD('yw_rsvps');
+const getFood  = () => getD('yw_food');
+
+let currentCode = '';
+let rsvpChoice  = '';
+
+// ═══════════════════════════
+// NAV
+// ═══════════════════════════
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════
+// ACCESS CODE
+// ═══════════════════════════
+document.getElementById('code-input').addEventListener('input', e => {
+  e.target.value = e.target.value.toUpperCase();
+  document.getElementById('code-error').textContent = '';
+});
+document.getElementById('code-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkCode();
+});
+
+function checkCode() {
+  const val = document.getElementById('code-input').value.trim().toUpperCase();
+  const err = document.getElementById('code-error');
+  if (!val) { err.textContent = 'Please enter your access code'; return; }
+  if (!CODES.includes(val)) { err.textContent = 'Invalid code. Please check your invite.'; return; }
+  currentCode = val;
+  openInvite();
+}
+
+function adminLogin() {
+  const c = prompt('Enter admin code:');
+  if (!c) return;
+  if (c.trim().toUpperCase() === ADMIN_CODE) { buildAdmin(); show('s-admin'); }
+  else alert('Incorrect admin code.');
+}
+
+// ═══════════════════════════
+// INVITE SCREEN
+// ═══════════════════════════
+function openInvite() {
+  const rsvps = getRsvps();
+  const food  = getFood();
+  const myRsvp = rsvps[currentCode];
+  const myFood = food[currentCode];
+
+  if (myRsvp) {
+    // Already RSVPed — show status
+    document.getElementById('rsvp-section').style.display = 'none';
+    document.getElementById('rsvp-done').style.display = 'block';
+    document.getElementById('rsvp-done-name').textContent = myRsvp.name;
+
+    const statusEl = document.getElementById('rsvp-done-status');
+    if (myRsvp.attending) {
+      statusEl.innerHTML = '<span class="status-pill status-confirmed">✓ Attending</span>';
+      if (myFood) {
+        document.getElementById('menu-cta').style.display = 'none';
+        document.getElementById('menu-done-note').style.display = 'block';
+      } else {
+        document.getElementById('menu-cta').style.display = 'block';
+        document.getElementById('menu-done-note').style.display = 'none';
+      }
+    } else {
+      statusEl.innerHTML = '<span class="status-pill status-declined">✗ Not Attending</span>';
+      document.getElementById('menu-cta').style.display = 'none';
+    }
+  } else {
+    // Fresh visit
+    document.getElementById('rsvp-section').style.display = 'block';
+    document.getElementById('rsvp-done').style.display = 'none';
+    document.getElementById('rsvp-name').value = '';
+    rsvpChoice = '';
+    document.getElementById('btn-yes').className = 'rsvp-btn';
+    document.getElementById('btn-no').className  = 'rsvp-btn';
+  }
+
+  show('s-invite');
+}
+
+function selectRsvp(choice) {
+  rsvpChoice = choice;
+  document.getElementById('btn-yes').className = choice==='yes' ? 'rsvp-btn selected-yes' : 'rsvp-btn';
+  document.getElementById('btn-no').className  = choice==='no'  ? 'rsvp-btn selected-no'  : 'rsvp-btn';
+  document.getElementById('rsvp-error').textContent = '';
+}
+
+function submitRsvp() {
+  const name = document.getElementById('rsvp-name').value.trim();
+  const err  = document.getElementById('rsvp-error');
+  if (!name)       { err.textContent = 'Please enter your name'; return; }
+  if (!rsvpChoice) { err.textContent = 'Please select Yes or No'; return; }
+
+  const rsvps = getRsvps();
+  rsvps[currentCode] = {
+    name,
+    attending: rsvpChoice === 'yes',
+    time: now()
+  };
+  setD('yw_rsvps', rsvps);
+
+  // Show thank-you for RSVP
+  const tyIcon  = document.getElementById('ty-icon');
+  const tyTitle = document.getElementById('ty-title');
+  const tyMsg   = document.getElementById('ty-msg');
+  const tyBox   = document.getElementById('ty-box');
+
+  if (rsvpChoice === 'yes') {
+    tyIcon.textContent = '🎉';
+    tyTitle.innerHTML  = "You're In!<br><em>Can't Wait!</em>";
+    tyMsg.textContent  = 'Your RSVP has been received. Next, please choose your food for the evening.';
+    tyBox.innerHTML    = `
+      <div class="ty-box-title">RSVP Confirmed</div>
+      <div class="ty-row">Name: <span>${name}</span></div>
+      <div class="ty-row">Status: <span>✓ Attending</span></div>
+    `;
+    document.getElementById('ty-box').insertAdjacentHTML('afterend',
+      `<button class="btn-gold" style="margin-bottom:10px;" onclick="goToMenu()">Choose My Food →</button>`
+    );
+  } else {
+    tyIcon.textContent = '😔';
+    tyTitle.innerHTML  = "We'll Miss<br><em>You!</em>";
+    tyMsg.textContent  = 'Your RSVP has been received. We hope to see you another time!';
+    tyBox.innerHTML    = `
+      <div class="ty-box-title">RSVP Received</div>
+      <div class="ty-row">Name: <span>${name}</span></div>
+      <div class="ty-row">Status: <span>Not Attending</span></div>
+    `;
+    // Remove any leftover food button
+    const old = document.querySelector('#s-thanks .btn-gold');
+    if (old) old.remove();
+  }
+
+  show('s-thanks');
+}
+
+function goBackToInvite() {
+  openInvite();
+}
+
+// ═══════════════════════════
+// MENU SCREEN
+// ═══════════════════════════
+function goToMenu() {
+  // Clear previous ticks
+  document.querySelectorAll('#s-menu input[type=checkbox]').forEach(c => c.checked = false);
+  document.getElementById('menu-error').textContent = '';
+  show('s-menu');
+}
+
+function submitMenu() {
+  const err = document.getElementById('menu-error');
+  const sel = {};
+  ['starter','main','sides','drinks','dessert'].forEach(cat => {
+    const picked = [...document.querySelectorAll(`#s-menu input[name="${cat}"]:checked`)].map(i => i.value);
+    if (picked.length) sel[cat] = picked;
+  });
+  if (!Object.keys(sel).length) { err.textContent = 'Please select at least one item'; return; }
+
+  const rsvps = getRsvps();
+  const name  = rsvps[currentCode]?.name || 'Guest';
+  const food  = getFood();
+  food[currentCode] = { name, selections: sel, time: now() };
+  setD('yw_food', food);
+
+  // Thank you for food
+  const tyIcon  = document.getElementById('ty-icon');
+  const tyTitle = document.getElementById('ty-title');
+  const tyMsg   = document.getElementById('ty-msg');
+  const tyBox   = document.getElementById('ty-box');
+  const old = document.querySelector('#s-thanks .btn-gold');
+  if (old) old.remove();
+
+  tyIcon.textContent = '✨';
+  tyTitle.innerHTML  = "All Set!<br><em>See You There</em>";
+  tyMsg.textContent  = 'Your food choices have been saved. We\'re looking forward to seeing you!';
+
+  const allItems = Object.values(sel).flat();
+  tyBox.innerHTML = `
+    <div class="ty-box-title">Your Food Selections</div>
+    ${allItems.map(i => `<div class="ty-row">· <span>${i}</span></div>`).join('')}
+  `;
+  show('s-thanks');
+}
+
+// ═══════════════════════════
+// ADMIN
+// ═══════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function buildAdmin() {
+  const rsvps = getRsvps();
+  const food  = getFood();
+  const rsvpList = Object.entries(rsvps).map(([code, r]) => ({...r, code}));
+  const foodList  = Object.entries(food).map(([code, f]) => ({...f, code}));
+
+  const attending = rsvpList.filter(r => r.attending);
+  const declined  = rsvpList.filter(r => !r.attending);
+  const foodDone  = foodList.length;
+
+  // RSVP Stats
+  document.getElementById('rsvp-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${rsvpList.length}</div><div class="stat-lbl">Total RSVPs</div></div>
+    <div class="stat-card"><div class="stat-num">${attending.length}</div><div class="stat-lbl">Attending</div></div>
+    <div class="stat-card"><div class="stat-num">${declined.length}</div><div class="stat-lbl">Declined</div></div>
+    <div class="stat-card"><div class="stat-num">${foodDone}</div><div class="stat-lbl">Food Submitted</div></div>
+  `;
+
+  // RSVP Table
+  const rb = document.getElementById('rsvp-tbody');
+  rb.innerHTML = !rsvpList.length
+    ? `<tr><td colspan="4"><div class="empty">No RSVPs yet</div></td></tr>`
+    : rsvpList.map(r => `
+        <tr>
+          <td style="color:rgba(255,255,255,0.85);font-weight:700;">${r.name}</td>
+          <td><span class="code-tag">${r.code}</span></td>
+          <td>${r.attending
+            ? '<span class="status-pill status-confirmed" style="font-size:9px;">✓ Attending</span>'
+            : '<span class="status-pill status-declined" style="font-size:9px;">✗ Declined</span>'}</td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.3);">${r.time}</td>
+        </tr>`).join('');
+
+  // Food Table
+  const fb = document.getElementById('food-tbody');
+  fb.innerHTML = !foodList.length
+    ? `<tr><td colspan="7"><div class="empty">No food selections yet</div></td></tr>`
+    : foodList.map(f => `
+        <tr>
+          <td style="color:rgba(255,255,255,0.85);font-weight:700;">${f.name}</td>
+          <td><span class="code-tag">${f.code}</span></td>
+          <td>${chips(f.selections.starter)}</td>
+          <td>${chips(f.selections.main)}</td>
+          <td>${chips(f.selections.sides)}</td>
+          <td>${chips(f.selections.drinks)}</td>
+          <td>${chips(f.selections.dessert)}</td>
+        </tr>`).join('');
+
+  // Food Summary
+  const counts = {};
+  foodList.forEach(f => Object.values(f.selections).flat().forEach(i => { counts[i] = (counts[i]||0)+1; }));
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  document.getElementById('food-summary-grid').innerHTML = !sorted.length
+    ? '<p style="color:rgba(255,255,255,0.2);font-style:italic;font-family:\'Cormorant Garamond\',serif;">No food data yet</p>'
+    : sorted.map(([name,count]) => `
+        <div class="food-sum-card">
+          <span class="food-sum-name">${name}</span>
+          <span class="food-sum-count">${count}</span>
+        </div>`).join('');
+
+  // Code Stats
+  const usedCodes = Object.keys(rsvps);
+  document.getElementById('code-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${CODES.length}</div><div class="stat-lbl">Total Codes</div></div>
+    <div class="stat-card"><div class="stat-num">${usedCodes.length}</div><div class="stat-lbl">Used</div></div>
+    <div class="stat-card"><div class="stat-num">${CODES.length - usedCodes.length}</div><div class="stat-lbl">Not Yet Used</div></div>
+  `;
+
+  // Codes Grid
+  document.getElementById('codes-grid').innerHTML = CODES.map(c => `
+    <div class="code-item">
+      <span class="code-val">${c}</span>
+      <span class="${usedCodes.includes(c) ? 'c-used' : 'c-open'}">${usedCodes.includes(c) ? 'Used' : 'Open'}</span>
+    </div>`).join('');
+}
+
+function exportCSV() {
+  const rsvps = getRsvps();
+  const food  = getFood();
+  const rows  = [['Name','Code','Attending','Starter','Main','Sides','Drinks','Dessert','RSVP Time','Food Time']];
+  CODES.forEach(code => {
+    const r = rsvps[code];
+    const f = food[code];
+    if (!r && !f) return;
+    const name = r?.name || f?.name || '';
+    const att  = r ? (r.attending ? 'Yes' : 'No') : '';
+    const sel  = f?.selections || {};
+    rows.push([
+      name, code, att,
+      (sel.starter||[]).join('; '),
+      (sel.main||[]).join('; '),
+      (sel.sides||[]).join('; '),
+      (sel.drinks||[]).join('; '),
+      (sel.dessert||[]).join('; '),
+      r?.time||'', f?.time||''
+    ]);
+  });
+  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'youth_week_responses.csv';
+  a.click();
+}
+
+function buildMessages() {
+  const base = (document.getElementById('site-url-input')?.value || '').trim().replace(/\/$/, '');
+  const adminPreview = document.getElementById('admin-link-preview');
+  if (adminPreview) {
+    adminPreview.textContent = base
+      ? `${base}/?admin=${ADMIN_CODE}`
+      : 'paste your URL above';
+  }
+
+  const list = document.getElementById('messages-list');
+  if (!list) return;
+
+  list.innerHTML = CODES.map((code, i) => {
+    const guestLink = base ? `${base}/?code=${code}` : `[your-site-url]/?code=${code}`;
+    const msg =
+`Dear Guest,
+
+You are warmly invited to our Youth Week Evening Gathering — a night of fellowship, fun & faith! 🎉
+
+Your personal access code is: *${code}*
+
+Click here to RSVP and view the full programme:
+${guestLink}
+
+Please RSVP as soon as possible so we can prepare for you. We cannot wait to celebrate with you!
+
+With love,
+The Youth Team`;
+
+    return `
+      <div class="msg-card" onclick="copyMsg(this, ${i})">
+        <div class="msg-card-header">
+          <span class="msg-code-badge">${code}</span>
+          <span class="msg-copy-hint">Tap to copy</span>
+        </div>
+        <div class="msg-body" id="msg-body-${i}">${escHtml(msg)}</div>
+        <span class="msg-copied" id="msg-copied-${i}">✓ Copied!</span>
+      </div>`;
+  }).join('');
+}
+
+function copyMsg(card, i) {
+  const body = document.getElementById(`msg-body-${i}`).textContent;
+  navigator.clipboard.writeText(body).then(() => {
+    const badge = document.getElementById(`msg-copied-${i}`);
+    badge.style.display = 'block';
+    setTimeout(() => badge.style.display = 'none', 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = body; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    const badge = document.getElementById(`msg-copied-${i}`);
+    badge.style.display = 'block';
+    setTimeout(() => badge.style.display = 'none', 2000);
+  });
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════
+// URL PARAM AUTO-LOGIN
+// ═══════════════════════════
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const code   = (params.get('code') || '').toUpperCase().trim();
+  const admin  = (params.get('admin') || '').toUpperCase().trim();
+
+  if (admin === ADMIN_CODE) {
+    buildAdmin(); show('s-admin'); return;
+  }
+  if (code && CODES.includes(code)) {
+    currentCode = code;
+    // Pre-fill input in case they see the screen briefly
+    const inp = document.getElementById('code-input');
+    if (inp) inp.value = code;
+    openInvite(); return;
+  }
+  if (code && !CODES.includes(code)) {
+    document.getElementById('code-error').textContent = 'Invalid code. Please check your invite link.';
+  }
+})();
+
+// ═══════════════════════════
+// HELPERS
+// ═══════════════════════════
+function chips(arr) {
+  if (!arr || !arr.length) return '<span style="color:rgba(255,255,255,0.2);">—</span>';
+  return arr.map(i => `<span class="food-chip">${i}</span>`).join('');
+}
+function now() {
+  return new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+}
+
+function getBaseURL() {
+  return window.location.origin + window.location.pathname;
+}
+</script>
+</body>
+</html>
